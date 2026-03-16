@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Баллистический маятник</title>
+    <style>
+        /* ========================================== */
+        /* === ФОН MAC OS X LEOPARD (AURORA) ======== */
+        /* ========================================== */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            font-family: "Lucida Grande", "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+            /* macOS X Leopard Aurora inspired background */
+            background-color: #0a0f2a;
+            background-image:
+                radial-gradient(circle at 20% 60%, rgba(220, 114, 232, 0.35) 0%, transparent 55%),
+                radial-gradient(circle at 80% 30%, rgba(125, 141, 223, 0.35) 0%, transparent 55%),
+                radial-gradient(circle at 40% 90%, rgba(255, 255, 255, 0.15) 0%, transparent 60%),
+                linear-gradient(180deg, #0b102d 0%, #050816 100%);
+
+            color: #5e5561;
+        }
+
+        /* ========================================== */
+        /* ==== ФИЗИЧЕСКИЕ ОБЪЕКТЫ (МАЯТНИК И ПУШКА) == */
+        /* ========================================== */
+
+        /* Точка крепления маятника (потолок) */
+        .pendulum-pivot {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 26px;
+
+            background: linear-gradient(180deg,#f4f4f4 0%,#bfc3c9 40%,#8e939a 100%);
+            border-radius: 0 0 10px 10px;
+            border: 1px solid #6d6f73;
+
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.9),
+                inset 0 -2px 4px rgba(0,0,0,0.25),
+                0 6px 16px rgba(0,0,0,0.6);
+
+            z-index: 20;
+        }
+
+        /* Вращающаяся система маятника */
+        .pendulum-system {
+            position: absolute;
+            top: 10px; /* Ось вращения */
+            left: 50%;
+            transform-origin: top center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10;
+        }
+
+        /* Нить маятника */
+        .wire {
+            width: 2px;
+            height: 50vh;
+            background: #a0a0a0;
+            box-shadow: 1px 0 2px rgba(0,0,0,0.8);
+        }
+
+        /* Деревянный блок маятника (Детализированный) */
+        .block {
+            width: 80px;
+            height: 80px;
+            /* Текстура дерева */
+            background: linear-gradient(135deg, #A67142 0%, #70401E 100%);
+            border: 2px solid #3B200C;
+            border-radius: 6px;
+            box-shadow:
+                    inset 1px 1px 3px rgba(255,255,255,0.2),
+                    inset -2px -2px 5px rgba(0,0,0,0.5),
+                    5px 10px 20px rgba(0,0,0,0.6);
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 26px;
+            font-weight: bold;
+            color: rgba(255,255,255,0.6);
+            text-shadow: -1px -1px 0 rgba(0,0,0,0.5);
+        }
+
+        /* Металлическая мишень на левой стороне блока */
+        .target-plate {
+            position: absolute;
+            left: -4px;
+            top: 20px;
+            width: 6px;
+            height: 40px;
+            background: linear-gradient(to right, #ccc, #eee, #999);
+            border: 1px solid #555;
+            border-radius: 2px;
+        }
+
+        /* Стендовая пушка (Слева) */
+        .launcher-station {
+            position: absolute;
+            left: 8vw;
+            top: calc(50vh + 60px); /* Центр блока */
+            transform: translateY(-50%);
+            z-index: 12;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Ствол пушки */
+        .launcher-barrel {
+            width: 220px;
+            height: 90px;
+
+            /* Only display the image without any visual container */
+            background-image: url("https://upload.wikimedia.org/wikipedia/commons/b/b4/Glock_17_MOD_45154998_%28Transparent%29.png");
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+
+            background-color: transparent;
+            border: none;
+            box-shadow: none;
+        }
+
+        /* Вспышка выстрела */
+        .muzzle-flash {
+            position: absolute;
+            right: -10px;
+            top: 10px;
+            width: 70px;
+            height: 70px;
+            background: radial-gradient(circle, #fff 0%, #ffcc00 20%, #ff3300 50%, transparent 70%);
+            border-radius: 50%;
+            opacity: 0;
+            mix-blend-mode: screen;
+        }
+
+        /* Летящая пуля */
+        .flying-bullet {
+            position: absolute;
+            left: calc(8vw + 200px);
+            top: calc(50vh + 30px);
+            transform: translateY(-50%);
+            width: 20px;
+            height: 8px;
+            /* Золотистая пуля */
+            background: linear-gradient(to bottom, #ffea8c, #d4af37, #997a00);
+            border-radius: 50% 3px 3px 50%;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            z-index: 11;
+            opacity: 0;
+        }
+
+        /* ========================================== */
+        /* === ПАНЕЛЬ УПРАВЛЕНИЯ (BRUSHED METAL) ==== */
+        /* ========================================== */
+        .control-panel {
+            position: fixed;
+            right: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 320px;
+            /* Эффект матового алюминия */
+            background: linear-gradient(0deg, #a6abb2 0%, #d4d7db 100%);
+            border: 1px solid #777;
+            border-top: 1px solid #fff;
+            border-radius: 8px;
+            padding: 20px 25px 30px 25px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255,255,255,1);
+            z-index: 100;
+        }
+
+        /* Оконные кнопки Apple (Светофор) */
+        .window-controls {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 20px;
+        }
+        .dot {
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.5);
+        }
+        .dot.red { background: radial-gradient(circle at 30% 30%, #ff8585, #ff2e2e 70%, #cc0000); border: 1px solid #d00; }
+        .dot.yellow { background: radial-gradient(circle at 30% 30%, #ffdf85, #ffb82e 70%, #d98f00); border: 1px solid #d90; }
+        .dot.green { background: radial-gradient(circle at 30% 30%, #85ff93, #28c940 70%, #008f11); border: 1px solid #0a0; }
+
+        .panel-header h2 {
+            margin: 0;
+            font-size: 18px;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.8);
+            text-align: center;
+            color: #222;
+        }
+
+        .inputs-container {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .input-group label {
+            font-size: 12px;
+            color: #444;
+            font-weight: bold;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.6);
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        /* Поля ввода в стиле Mac OS X (вдавленные, белые) */
+        input {
+            width: 100%;
+            background: #ffffff;
+            border: 1px solid #888;
+            border-top: 2px solid #555; /* Тень сверху */
+            color: #000;
+            padding: 8px 30px 8px 12px;
+            border-radius: 15px; /* Pill-shape */
+            font-size: 14px;
+            outline: none;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.15), 0 1px 0 rgba(255,255,255,0.8);
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        input:focus {
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.15), 0 0 5px rgba(81, 167, 249, 0.8);
+            border-color: #51a7f9;
+        }
+
+        .unit {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Знаменитые желейные кнопки Aqua! */
+        button {
+            width: 100%;
+            margin-top: 20px;
+            background: linear-gradient(180deg, #8bc2ff 0%, #4f9ef0 49%, #1b6cd9 50%, #2076e3 100%);
+            border: 1px solid #103173;
+            color: #fff;
+            padding: 10px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            text-shadow: 0 -1px 0 rgba(0,0,0,0.5);
+            box-shadow: inset 0 1px 2px rgba(255,255,255,0.8), 0 2px 5px rgba(0,0,0,0.4);
+            cursor: pointer;
+        }
+
+        button:active {
+            background: linear-gradient(180deg, #5b92cc 0%, #3071b5 49%, #0f4896 50%, #1353a1 100%);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.6);
+        }
+
+        button:disabled {
+            background: linear-gradient(180deg, #d0d0d0 0%, #b0b0b0 49%, #999 50%, #a0a0a0 100%);
+            border-color: #777;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+            color: #555;
+            cursor: not-allowed;
+        }
+
+        /* Вывод результата (Экранчик) */
+        .result-box {
+            margin-top: 20px;
+            background: #eef2f5;
+            border: 1px solid #888;
+            border-top: 2px solid #666;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .result-title {
+            font-size: 11px;
+            font-weight: bold;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        .result-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #111;
+            margin-top: 5px;
+            font-family: "Courier New", Courier, monospace;
+        }
+
+        .result-value span {
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+
+<!-- 1. Стендовая пушка (Слева) -->
+<div class="launcher-station" id="launcher">
+    <div class="launcher-barrel">
+        <div class="muzzle-flash" id="flash"></div>
+    </div>
+</div>
+
+<!-- 2. Летящая пуля -->
+<div class="flying-bullet" id="bullet"></div>
+
+<!-- 3. Система маятника (По центру) -->
+<div class="pendulum-pivot"></div>
+<div class="pendulum-system" id="pendulum">
+    <div class="wire"></div>
+    <div class="block">
+        <div class="target-plate"></div>
+        M
+    </div>
+</div>
+
+<!-- 4. Панель управления (OS X Brushed Metal) -->
+<aside class="control-panel">
+    <div class="window-controls">
+        <div class="dot red"></div>
+        <div class="dot yellow"></div>
+        <div class="dot green"></div>
+    </div>
+
+    <div class="panel-header">
+        <h2>Настройки опыта</h2>
+    </div>
+
+    <div class="inputs-container">
+        <div class="input-group">
+            <label>Масса пули (m)</label>
+            <div class="input-wrapper">
+                <input type="number" id="bulletMass" value="9.0" step="0.1" min="0.1">
+                <span class="unit">г</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>Масса маятника (M)</label>
+            <div class="input-wrapper">
+                <input type="number" id="pendulumMass" value="5.0" step="0.1" min="0.1">
+                <span class="unit">кг</span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>Высота подъема (h)</label>
+            <div class="input-wrapper">
+                <input type="number" id="height" value="15.0" step="0.1" min="0.1">
+                <span class="unit">см</span>
+            </div>
+        </div>
+    </div>
+
+    <button id="fireBtn" onclick="performExperiment()">Произвести выстрел</button>
+
+    <div class="result-box">
+        <div class="result-title">Начальная скорость v₀</div>
+        <div class="result-value" id="velocity-result">0.00 <span>м/с</span></div>
+    </div>
+</aside>
+
+<script>
+    async function performExperiment() {
+        const bulletMass = document.getElementById('bulletMass').value;
+        const pendulumMass = document.getElementById('pendulumMass').value;
+        const height = document.getElementById('height').value;
+
+        if(!bulletMass || !pendulumMass || !height) {
+            alert("Пожалуйста, заполните все параметры!");
+            return;
+        }
+
+        const button = document.getElementById('fireBtn');
+        button.disabled = true;
+        button.innerText = "Расчет...";
+
+        try {
+            // Вызов API на твоем Java сервере
+            const response = await fetch('/api/calculate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    bulletMass: parseFloat(bulletMass),
+                    pendulumMass: parseFloat(pendulumMass),
+                    height: parseFloat(height)
+                })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                triggerPhysicsAnimation(parseFloat(height), data.formattedVelocity);
+            } else {
+                alert("Ошибка сервера Spring Boot.");
+                resetButton(button);
+            }
+        } catch (error) {
+            console.error("Ошибка сети:", error);
+            alert("Сервер не отвечает. Запусти Spring Boot.");
+            resetButton(button);
+        }
+    }
+
+    function triggerPhysicsAnimation(heightCm, resultVelocity) {
+        const launcher = document.getElementById('launcher');
+        const flash = document.getElementById('flash');
+        const bullet = document.getElementById('bullet');
+        const pendulum = document.getElementById('pendulum');
+        const velocityResult = document.getElementById('velocity-result');
+        const button = document.getElementById('fireBtn');
+
+        // --- ШАГ 1: РАСЧЕТ УГЛА ОТКЛОНЕНИЯ ---
+        // Длина нити (относительно экрана). Для визуализации примем, что нить 50vh = 100 см.
+        const L_cm = 100;
+        const effectiveHeight = Math.min(heightCm, L_cm - 2);
+        const radians = Math.acos(1 - (effectiveHeight / L_cm));
+
+        // ВАЖНО: Пистолет слева, маятник отклоняется вправо.
+        // В CSS поворот против часовой стрелки (влево) это положительные градусы,
+        // а нам нужно чтобы он пошел ВПРАВО, поэтому делаем угол отрицательным!
+        let angleDeg = - (radians * (180 / Math.PI));
+        // Ограничение для реалистичности
+        angleDeg = Math.max(angleDeg, -70);
+
+        // --- ШАГ 2: АНИМАЦИЯ ПИСТОЛЕТА И ПУЛИ ---
+        // Отдача
+        launcher.animate([
+            { transform: 'translateY(-50%) translateX(0)' },
+            { transform: 'translateY(-50%) translateX(-25px)', offset: 0.1 },
+            { transform: 'translateY(-50%) translateX(0)' }
+        ], { duration: 500, easing: 'cubic-bezier(0.1, 0.9, 0.2, 1)' });
+
+        // Вспышка
+        flash.animate([
+            { opacity: 1, transform: 'scale(1.5)' },
+            { opacity: 0, transform: 'scale(0.5)' }
+        ], { duration: 150, easing: 'ease-out' });
+
+        // Полет пули (к мишени)
+        const targetX = 'calc(50vw - 40px)'; // Центр экрана минус половина ширины блока
+
+        const bulletFly = bullet.animate([
+            { left: 'calc(8vw + 200px)', top: 'calc(50vh + 30px)', opacity: 1, transform: 'rotate(0deg)' },
+            { left: targetX, top: 'calc(50vh + 45px)', opacity: 1, transform: 'rotate(0deg)' }
+        ], { duration: 200, easing: 'linear', fill: 'forwards' });
+
+        // --- ШАГ 3: КОЛЛИЗИЯ И ГРАВИТАЦИЯ МАЯТНИКА ---
+        bulletFly.onfinish = () => {
+
+            // 1. ПУЛЯ ПАДАЕТ
+            // После удара о мишень пуля отскакивает чуть вниз и падает на пол
+            bullet.animate([
+                { left: targetX, top: 'calc(50vh + 45px)', transform: 'rotate(0deg)', opacity: 1 },
+                { left: `calc(${targetX} - 20px)`, top: '100vh', transform: 'rotate(-45deg)', opacity: 0 }
+            ], { duration: 700, easing: 'ease-in', fill: 'forwards' });
+
+            // 2. ГРАВИТАЦИЯ И ЗАТУХАНИЕ МАЯТНИКА (Damped Harmonic Oscillator)
+            // Создаем реалистичные кадры затухающей синусоиды
+            const frames = 150; // Количество кадров анимации
+            const duration = 6000; // Маятник качается 6 секунд
+            const keyframes = [];
+
+            const freq = 15;   // Частота (как быстро качается туда-сюда)
+            const damp = 2.5;  // Сила затухания (гравитация/трение воздуха)
+
+            // Нормализатор, чтобы самый первый пик точно достигал расчетного угла angleDeg
+            const peakTime = Math.PI / (2 * freq);
+            const normFactor = 1 / (Math.exp(-damp * peakTime) * Math.sin(freq * peakTime));
+
+            for (let i = 0; i <= frames; i++) {
+                let t = i / frames;
+                // Формула: Угол * Затухание * Синусоида
+                let currentAngle = angleDeg * normFactor * Math.exp(-damp * t) * Math.sin(freq * t);
+                keyframes.push({ transform: `rotate(${currentAngle}deg)` });
+            }
+
+            // Запускаем физику маятника
+            pendulum.animate(keyframes, {
+                duration: duration,
+                easing: 'linear',
+                fill: 'forwards'
+            });
+
+            // Вывод результата почти сразу после удара
+            setTimeout(() => {
+                velocityResult.innerHTML = `${resultVelocity} <span>м/с</span>`;
+                resetButton(button);
+            }, 500);
+        };
+    }
+
+    function resetButton(button) {
+        button.disabled = false;
+        button.innerText = "Произвести выстрел";
+    }
+</script>
+</body>
+</html>
