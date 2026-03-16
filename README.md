@@ -1,13 +1,110 @@
-🎯 Ballistic Pendulum: Bullet Velocity SimulationA high-fidelity full-stack physics simulation designed to calculate the muzzle velocity of a projectile using the Ballistic Pendulum method. This project combines a robust Java backend with an interactive web-based laboratory stand inspired by the classic macOS X Leopard (Aqua) aesthetic.👥 AuthorsRadion Vakhromeev — Lead Developer / Physics LogicRuslan Giniyatov — Full-stack Engineer / UI DesignUniversity: Irkutsk National Research Technical University (IRNITU)Group: ISIb-25🧪 Scientific PrincipleThe ballistic pendulum is a classic physics experiment used to determine the velocity of a fast-moving projectile. By firing a bullet into a suspended heavy wooden block, we can derive the initial velocity through the conservation of momentum and energy.The Mathematical ModelThe calculation is based on the following formula:$$v_0 = \frac{m + M}{m} \sqrt{2gh}$$Where:$v_0$ — Initial velocity of the bullet ($m/s$)$m$ — Mass of the bullet ($kg$)$M$ — Mass of the pendulum ($kg$)$h$ — Maximum vertical rise of the pendulum ($m$)$g$ — Gravitational acceleration ($\approx 9.81 \, m/s^2$)🚀 Key FeaturesInteractive UI: A vintage macOS X Leopard (Aqua/Aurora) aesthetic, featuring "Brushed Metal" textures and fluid animations.Physics Engine: Real-time calculation of velocity via a Spring Boot REST API.Visual Simulation: * Realistic recoil and muzzle flash effects.Damped Harmonic Oscillation: The pendulum swings and settles realistically using physics-based keyframe animations.Unit Conversion: Automatically handles conversion from grams/centimeters to SI units.🛠 Tech StackBackendJava 17 with Spring Boot 3.REST API architecture for stateless physics calculations.FrontendVanilla JavaScript with Web Animations API.CSS3 featuring advanced radial gradients, glassmorphism, and custom animations.No heavy frameworks — lightweight and fast.📦 Installation & RunningPrerequisitesJDK 17 or higherMaven 3.6+Step-by-StepClone the repository:git clone [https://github.com/your-username/ballistic-pendulum.git](https://github.com/your-username/ballistic-pendulum.git)
+🎯 Ballistic Pendulum: Projectile Velocity Simulation
+
+A professional full-stack physics simulation designed to calculate and visualize the velocity of a projectile using the Ballistic Pendulum method. This project features a robust Spring Boot backend and a high-fidelity web interface inspired by the classic macOS X Leopard (Aqua) aesthetic.
+
+👥 Development Team
+
+Radion Vakhromeev — Lead Developer / Physics Logic
+
+Ruslan Giniyatov — Full-stack Engineer / UI Design
+
+Organization: Irkutsk National Research Technical University (IRNITU)
+
+Group: ISIb-25
+
+🧪 Scientific Context
+
+The ballistic pendulum is a fundamental physics experiment used to measure the velocity of a fast-moving projectile. When the projectile strikes the pendulum, momentum is conserved, and the kinetic energy is converted into potential energy as the pendulum rises.
+
+Mathematical Model
+
+The initial velocity is calculated using the following formula:
+
+$$v_0 = \frac{m + M}{m} \sqrt{2gh}$$
+
+Where:
+
+$v_0$ — Initial velocity ($m/s$)
+
+$m$ — Mass of the projectile ($kg$)
+
+$M$ — Mass of the pendulum ($kg$)
+
+$h$ — Maximum vertical displacement ($m$)
+
+$g$ — Gravitational acceleration ($\approx 9.81 \, m/s^2$)
+
+🚀 Key Features
+
+Interactive Lab Stand: A vintage macOS X Leopard UI with "Brushed Metal" textures.
+
+Real-time Physics: Calculations performed via a Java REST API.
+
+Advanced Visuals:
+
+Realistic muzzle flash and recoil simulation.
+
+Damped Harmonic Oscillation: The pendulum swings and settles based on physical gravity logic.
+
+Automatic Scaling: Converts grams and centimeters to SI units instantly.
+
+🛠 Tech Stack
+
+Backend
+
+Java 17 & Spring Boot 3
+
+REST API for stateless calculations
+
+Frontend
+
+Vanilla JavaScript (Web Animations API)
+
+Modern CSS3 (Radial Gradients, Glassmorphism, Keyframes)
+
+Responsive design for high-resolution displays
+
+📦 Getting Started
+
+Prerequisites
+
+JDK 17 or higher
+
+Maven 3.6+
+
+Installation
+
+Clone the repository:
+
+git clone [https://github.com/your-username/ballistic-pendulum.git](https://github.com/your-username/ballistic-pendulum.git)
 cd ballistic-pendulum
-Build and Run the Spring Boot server:./mvnw spring-boot:run
-Launch the Dashboard:Open your browser and navigate to:http://localhost:8080📂 Project Structure├── src/
+
+
+Run the application:
+
+./mvnw spring-boot:run
+
+
+Open the Simulation:
+Navigate to http://localhost:8080 in your web browser.
+
+📂 Project Structure
+
+├── src/
 │   ├── main/
 │   │   ├── java/com/example/bulletvelocity/
-│   │   │   ├── PhysicsController.java    # REST API & Calculation Logic
-│   │   │   └── Application.java          # Entry Point
+│   │   │   ├── PhysicsController.java    # Physics engine & REST logic
+│   │   │   └── Application.java          # Spring Boot entry point
 │   │   └── resources/
 │   │       └── static/
-│   │           └── index.html            # Main UI & Physics Animations
-└── pom.xml                               # Dependencies & Project Metadata
-🛡 LicenseThis project was developed for educational purposes at IRNITU. All rights reserved by the authors.<p align="center">Made with ❤️ by ISIb-25 Developers</p>
+│   │           └── index.html            # Web Interface & Animations
+└── pom.xml                               # Project dependencies
+
+
+🛡 License
+
+Educational project developed at IRNITU. All rights reserved.
+
+<p align="center">
+Made with ❤️ by ISIb-25 Developers
+</p>
