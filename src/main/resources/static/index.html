@@ -6,7 +6,7 @@
     <title>Баллистический маятник</title>
     <style>
         /* ========================================== */
-        /* === ФОН MAC OS X LEOPARD (AURORA) ======== */
+        /* === ФОН OS X LEOPARD (AURORA) ======== */
         /* ========================================== */
         body, html {
             margin: 0;
@@ -21,7 +21,7 @@
             user-select: none; /* Отключаем выделение текста при свайпе */
         }
 
-        /* Фоны в стиле Apple */
+        /* Фоны */
         .bg-leopard {
             background-color: #0a0f2a;
             background-image:
@@ -200,7 +200,7 @@
             pointer-events: none;
         }
 
-        /* === КНОПКА ФОНА (КЛАССИЧЕСКАЯ МЕТАЛЛИЧЕСКАЯ КНОПКА APPLE) === */
+        /* === КНОПКА ФОНА (КЛАССИЧЕСКАЯ МЕТАЛЛИЧЕСКАЯ КНОПКА) === */
         .bg-switcher {
             position: fixed;
             top: 20px;
@@ -621,7 +621,7 @@
     let activeAnimations = [];
     let numberAnimFrame = null; // Переменная для контроля анимации чисел
 
-    // --- Управление фонами (Стиль Apple) ---
+    // --- Управление фонами (Стиль) ---
     const backgrounds = ['bg-leopard', 'bg-tiger', 'bg-linen', 'bg-space'];
     let currentBgIndex = 0;
     function cycleBackground() {
