@@ -11,8 +11,11 @@ import org.springframework.web.bind.annotation.*;
 public class PhysicsController {
 
     // Вспомогательные классы (record) для приема и отправки данных в формате JSON
-    public record CalculationRequest(double bulletMass, double pendulumMass, double height) {}
-    public record CalculationResponse(double velocity, String formattedVelocity) {}
+    public record CalculationRequest(double bulletMass, double pendulumMass, double height) {
+    }
+
+    public record CalculationResponse(double velocity, String formattedVelocity) {
+    }
 
     /**
      * Эндпоинт, принимающий POST запрос с переменными для расчета.
