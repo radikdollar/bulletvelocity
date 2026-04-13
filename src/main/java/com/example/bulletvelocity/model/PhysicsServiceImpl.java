@@ -1,7 +1,5 @@
-package com.example.bulletvelocity.view;
+package com.example.bulletvelocity.model;
 
-import com.example.bulletvelocity.model.CalculationRequest;
-import com.example.bulletvelocity.model.CalculationResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.Locale;
