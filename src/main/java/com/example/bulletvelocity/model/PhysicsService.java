@@ -1,7 +1,4 @@
-package com.example.bulletvelocity.view;
-
-import com.example.bulletvelocity.model.CalculationRequest;
-import com.example.bulletvelocity.model.CalculationResponse;
+package com.example.bulletvelocity.model;
 
 /**
  * Интерфейс сервиса физических расчетов.

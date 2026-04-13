@@ -1,6 +1,6 @@
 let globalPlaybackRate = 1.0;
 let activeAnimations = [];
-let numberAnimFrame = null; // Переменная для контроля анимации чисел
+let numberAnimFrame = null;
 
 // --- Управление фонами (Стиль) ---
 const backgrounds = ['bg-leopard', 'bg-tiger', 'bg-linen', 'bg-space'];
@@ -41,12 +41,10 @@ function resetView() {
     updateView();
 }
 
-// Перетаскивание мышью (Движение камеры вправо/влево)
+// Перетаскивание мышью
 document.body.addEventListener('mousedown', (e) => {
     if (e.target.closest('.control-panel') || e.target.closest('.zoom-panel') || e.target.closest('.bg-switcher')) return;
-
-    e.preventDefault(); // Предотвращаем случайное выделение текста
-
+    e.preventDefault();
     isDraggingView = true;
     startDragX = e.clientX;
     startPanX = currentPanX;
@@ -58,13 +56,8 @@ window.addEventListener('mousemove', (e) => {
     if (!isDraggingView) return;
     const deltaX = (e.clientX - startDragX) / currentZoom;
     let newPan = startPanX + deltaX;
-
-    // Ограничение перемещения камеры
-    // maxPan: сдвиг вправо (камера смотрит влево) - не даем уйти за пушку
     const maxPan = window.innerWidth * 0.15;
-    // minPan: сдвиг влево (камера смотрит вправо) - оставляем запас для обзора маятника
     const minPan = -window.innerWidth * 0.6;
-
     currentPanX = Math.max(minPan, Math.min(maxPan, newPan));
     updateView();
 });
@@ -80,12 +73,8 @@ window.addEventListener('mouseleave', () => {
     document.getElementById('simulation-container').classList.remove('dragging');
 });
 
-// --- ИСПРАВЛЕНИЕ: Координаты точного попадания пули в мишень ---
-// Левый край блока (ширина 80px) находится на 50vw - 40px
-// Мишень (-4px) находится на 50vw - 44px
-// Чтобы правый край пули (ширина 20px) коснулся мишени, пуля должна остановиться на (50vw - 44px) - 20px = 50vw - 64px
 const TARGET_LEFT_PX = 'calc(50vw - 64px)';
-const EPICENTER_PX = 'calc(50vw - 44px)'; // Эпицентр взрыва прямо на металлической пластине
+const EPICENTER_PX = 'calc(50vw - 44px)';
 
 // --- Эпичные спецэффекты ---
 function createImpactEffect() {
@@ -93,7 +82,6 @@ function createImpactEffect() {
     const startLeft = EPICENTER_PX;
     const startTop = 'calc(50vh + 45px)';
 
-    // 0. Ослепительная вспышка (Glow)
     const flash = document.createElement('div');
     flash.className = 'impact-flash';
     flash.style.left = startLeft;
@@ -107,7 +95,6 @@ function createImpactEffect() {
     flashAnim.playbackRate = globalPlaybackRate;
     flashAnim.onfinish = () => flash.remove();
 
-    // 1. Двойная ударная волна
     for (let w = 0; w < 2; w++) {
         const wave = document.createElement('div');
         wave.className = 'shockwave';
@@ -124,7 +111,6 @@ function createImpactEffect() {
         waveAnim.onfinish = () => wave.remove();
     }
 
-    // 2. Эпичные искры (Имитация разлета и гравитации)
     for(let i=0; i < 40; i++) {
         const spark = document.createElement('div');
         spark.className = 'particle';
@@ -132,7 +118,6 @@ function createImpactEffect() {
         spark.style.width = size + 'px';
         spark.style.height = size + 'px';
 
-        // Температурные цвета искр
         const colors = ['#ffffff', '#ffea8c', '#ffaa00', '#ff3300'];
         spark.style.background = colors[Math.floor(Math.random() * colors.length)];
         spark.style.boxShadow = `0 0 ${size*2}px ${spark.style.background}`;
@@ -140,13 +125,10 @@ function createImpactEffect() {
         spark.style.top = startTop;
         container.appendChild(spark);
 
-        // Разлет (мощный конус преимущественно назад и вверх/вниз)
         const angle = (Math.random() * 180 - 90) * (Math.PI / 180);
-        const velocity = Math.random() * 300 + 100; // Увеличенная скорость
+        const velocity = Math.random() * 300 + 100;
         const tx = -Math.cos(angle) * velocity;
         const ty = Math.sin(angle) * velocity;
-
-        // Физика гравитации (опускание к концу анимации)
         const drop = Math.random() * 150 + 50;
 
         const sparkAnim = spark.animate([
@@ -160,24 +142,21 @@ function createImpactEffect() {
     }
 }
 
-// --- Отрисовка стильной шкалы (Транспортира) ---
+// --- Отрисовка стильной шкалы ---
 function drawScale() {
     const svg = document.getElementById('scale-container');
+    if (!svg) return;
     svg.innerHTML = '';
 
-    // Маятник крепится по центру сверху (50%, 0)
-    // Радиус маятника - 50vh.
     const vh = window.innerHeight;
-    const R = vh * 0.5 + 40; // 50vh нить + 40px половина блока
-    const cx = vh / 2; // Центр SVG по X (ширина SVG 100vh)
-    const cy = 0;      // Центр по Y
+    const R = vh * 0.5 + 40;
+    const cx = vh / 2;
+    const cy = 0;
 
-    // Рисуем дугу (только правую часть от 0 до 60 градусов)
     for(let angle = 0; angle <= 60; angle += 5) {
         const rad = angle * (Math.PI / 180);
         const isMajor = angle % 10 === 0;
 
-        // Маятник отклоняется вправо
         const x1 = cx + (R + (isMajor ? 10 : 5)) * Math.sin(rad);
         const y1 = cy + (R + (isMajor ? 10 : 5)) * Math.cos(rad);
         const x2 = cx + R * Math.sin(rad);
@@ -202,13 +181,9 @@ function drawScale() {
             svg.appendChild(text);
         }
     }
-
-    // Настройка viewBox, чтобы центр был правильным
     svg.setAttribute("viewBox", `0 0 ${vh} ${vh}`);
 }
 
-// Вызываем при загрузке и при изменении размера окна
-window.addEventListener('load', drawScale);
 window.addEventListener('resize', drawScale);
 
 // --- Управление временем (Slow Motion) ---
@@ -216,7 +191,6 @@ function updateTimeScale(val) {
     globalPlaybackRate = parseFloat(val);
     document.getElementById('timeVal').innerText = globalPlaybackRate.toFixed(1) + 'x';
 
-    // Применяем скорость ко всем активным анимациям "на лету"
     activeAnimations.forEach(anim => {
         if(anim.playState !== 'finished' && anim.playState !== 'idle') {
             anim.playbackRate = globalPlaybackRate;
@@ -224,22 +198,17 @@ function updateTimeScale(val) {
     });
 }
 
-// --- Сброс симуляции ---
-function resetSimulation() {
-    // Отменяем все анимации
+// --- Сброс визуальной части ---
+function resetSimulationVisuals() {
     activeAnimations.forEach(anim => anim.cancel());
     activeAnimations = [];
-
-    // ПРИНУДИТЕЛЬНАЯ ОЧИСТКА: Удаляем зависшие спецэффекты из DOM, если анимация была прервана сбросом
     document.querySelectorAll('.particle, .shockwave, .impact-flash').forEach(el => el.remove());
 
-    // Останавливаем бегущие цифры, если они еще работают
     if (numberAnimFrame) {
         cancelAnimationFrame(numberAnimFrame);
         numberAnimFrame = null;
     }
 
-    // Возвращаем элементы на исходные позиции (Точно 0 градусов)
     document.getElementById('launcher').style.transform = '';
     document.getElementById('flash').style.opacity = '0';
     document.getElementById('bullet').style.opacity = '0';
@@ -248,21 +217,24 @@ function resetSimulation() {
     document.getElementById('bullet').style.transform = '';
     document.getElementById('pendulum').style.transform = 'rotate(0deg)';
 
-    // Сброс UI
-    document.getElementById('velocity-result').innerHTML = '0.00 <span>м/с</span>';
-    document.getElementById('fireBtn').disabled = false;
-    document.getElementById('fireBtn').innerText = "Выстрел";
+    // Кнопка "Выстрел" теперь типа submit, но на всякий случай включаем её визуально
+    const fireBtn = document.getElementById('fireBtn');
+    if(fireBtn) {
+        fireBtn.disabled = false;
+        fireBtn.innerText = "Выстрел";
+    }
 }
 
 // --- Анимация бегущих цифр ---
 function animateValue(id, start, end, duration) {
     if (numberAnimFrame) cancelAnimationFrame(numberAnimFrame);
     const obj = document.getElementById(id);
+    if (!obj) return;
+
     let startTimestamp = null;
     const step = (timestamp) => {
         if (!startTimestamp) startTimestamp = timestamp;
         const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-        // Формула плавного замедления (easeOutExpo)
         const easeOut = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
         const currentVal = (start + (end - start) * easeOut).toFixed(2);
 
@@ -275,7 +247,6 @@ function animateValue(id, start, end, duration) {
     numberAnimFrame = window.requestAnimationFrame(step);
 }
 
-// Вспомогательная функция для запуска анимаций с учетом времени
 function playAnim(element, keyframes, options) {
     const anim = element.animate(keyframes, options);
     anim.playbackRate = globalPlaybackRate;
@@ -283,125 +254,65 @@ function playAnim(element, keyframes, options) {
     return anim;
 }
 
-// --- Основной расчет ---
-async function performExperiment() {
-    resetSimulation(); // Очищаем перед новым выстрелом
-
-    const bulletMass = parseFloat(document.getElementById('bulletMass').value);
-    const pendulumMass = parseFloat(document.getElementById('pendulumMass').value);
-    const heightCm = parseFloat(document.getElementById('height').value);
-
-    if(!bulletMass || !pendulumMass || !heightCm) {
-        alert("Пожалуйста, заполните все параметры!");
-        return;
-    }
-
-    const button = document.getElementById('fireBtn');
-    button.disabled = true;
-    button.innerText = "В процессе...";
-
-    let formattedVelocity = "0.00";
-
-    try {
-        // Пытаемся вызвать API (если сервер Spring Boot включен)
-        const response = await fetch('/api/calculate', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ bulletMass, pendulumMass, height: heightCm })
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            formattedVelocity = data.formattedVelocity;
-        } else {
-            throw new Error("Server error");
-        }
-    } catch (error) {
-        // ЛОКАЛЬНЫЙ ФОЛЛБЕК (Расчет прямо в JS, если API недоступно)
-        console.log("Сервер недоступен. Используется локальный расчет.");
-        const g = 9.81;
-        const h_m = heightCm / 100; // см в метры
-        const m_kg = bulletMass / 1000; // г в кг
-
-        // v = sqrt(2gh) - макс. скорость маятника
-        const v_pendulum = Math.sqrt(2 * g * h_m);
-        // Закон сохранения импульса: m * v0 = (m + M) * v_pendulum
-        const v0 = ((m_kg + pendulumMass) * v_pendulum) / m_kg;
-        formattedVelocity = v0.toFixed(2);
-    }
-
-    triggerPhysicsAnimation(heightCm, formattedVelocity);
-}
-
-// --- Анимация физики ---
+// --- Анимация физики (Теперь вызывается автоматически после загрузки) ---
 function triggerPhysicsAnimation(heightCm, resultVelocity) {
+    resetSimulationVisuals(); // Очищаем всё перед стартом
+
     const launcher = document.getElementById('launcher');
     const flash = document.getElementById('flash');
     const bullet = document.getElementById('bullet');
     const pendulum = document.getElementById('pendulum');
-    const velocityResult = document.getElementById('velocity-result');
     const button = document.getElementById('fireBtn');
 
-    // РАСЧЕТ УГЛА ОТКЛОНЕНИЯ
-    const L_cm = 100; // Визуальная длина
+    if(button) {
+        button.disabled = true;
+        button.innerText = "В процессе...";
+    }
+
+    const L_cm = 100;
     const effectiveHeight = Math.min(heightCm, L_cm - 1);
     const radians = Math.acos(1 - (effectiveHeight / L_cm));
 
     let angleDeg = -(radians * (180 / Math.PI));
-    angleDeg = Math.max(angleDeg, -75); // Визуальный лимит угла
+    angleDeg = Math.max(angleDeg, -75);
 
-    // Отдача пистолета
     playAnim(launcher, [
         { transform: 'translateY(-50%) translateX(0)' },
         { transform: 'translateY(-50%) translateX(-25px)', offset: 0.1 },
         { transform: 'translateY(-50%) translateX(0)' }
     ], { duration: 500, easing: 'cubic-bezier(0.1, 0.9, 0.2, 1)' });
 
-    // Вспышка
     playAnim(flash, [
         { opacity: 1, transform: 'scale(1.5)' },
         { opacity: 0, transform: 'scale(0.5)' }
     ], { duration: 150, easing: 'ease-out' });
 
-    // Полет пули (Точно к левому краю пластины)
     const bulletFly = playAnim(bullet, [
         { left: 'calc(8vw + 200px)', top: 'calc(50vh + 30px)', opacity: 1, transform: 'rotate(0deg)' },
         { left: TARGET_LEFT_PX, top: 'calc(50vh + 45px)', opacity: 1, transform: 'rotate(0deg)' }
     ], { duration: 200, easing: 'linear', fill: 'forwards' });
 
-    // После точного попадания пули в маятник
     bulletFly.onfinish = () => {
-        // Запуск эпичного спецэффекта
         createImpactEffect();
 
-        // Падение пули (отскок от пластины)
         playAnim(bullet, [
             { left: TARGET_LEFT_PX, top: 'calc(50vh + 45px)', transform: 'rotate(0deg)', opacity: 1 },
             { left: `calc(${TARGET_LEFT_PX} - 20px)`, top: '100vh', transform: 'rotate(-45deg)', opacity: 0 }
         ], { duration: 700, easing: 'ease-in', fill: 'forwards' });
 
-        // ИСПРАВЛЕНИЕ МАТЕМАТИКИ МАЯТНИКА (Всегда встает на 0)
         const frames = 150;
         const duration = 6000;
         const keyframes = [];
 
-        // Делаем частоту кратной числу ПИ, чтобы последний кадр синусоиды идеально совпадал с нулем
         const freq = 5 * Math.PI;
         const damp = 3.5;
-
-        // Точный расчет пика для нормализации
         const peakTime = Math.atan(freq / damp) / freq;
         const normFactor = 1 / (Math.exp(-damp * peakTime) * Math.sin(freq * peakTime));
 
         for (let i = 0; i <= frames; i++) {
             let t = i / frames;
             let currentAngle = angleDeg * normFactor * Math.exp(-damp * t) * Math.sin(freq * t);
-
-            // Жесткое обнуление на последнем кадре анимации
-            if (i === frames) {
-                currentAngle = 0;
-            }
-
+            if (i === frames) currentAngle = 0;
             keyframes.push({ transform: `rotate(${currentAngle}deg)` });
         }
 
@@ -411,13 +322,49 @@ function triggerPhysicsAnimation(heightCm, resultVelocity) {
             fill: 'forwards'
         });
 
-        // Выводим результат
         setTimeout(() => {
             const targetVelocity = parseFloat(resultVelocity);
             animateValue("velocity-result", 0, targetVelocity, 300 / globalPlaybackRate);
 
-            button.disabled = false;
-            button.innerText = "Выстрел";
+            if(button) {
+                button.disabled = false;
+                button.innerText = "Выстрел";
+            }
         }, 500 / globalPlaybackRate);
     };
 }
+
+// --- АВТОЗАПУСК АНИМАЦИИ ПРИ ЗАГРУЗКЕ СТРАНИЦЫ ---
+// Так как страница обновляется после ответа от сервера, скрипт должен сам понять,
+// что нужно проиграть анимацию.
+window.addEventListener('DOMContentLoaded', () => {
+    drawScale(); // Рисуем шкалу
+
+    const resultElement = document.getElementById('velocity-result');
+    if (resultElement) {
+        // Достаем текст, убираем неразрывные пробелы и буквы
+        const resultText = resultElement.innerText.replace(/[^\d.]/g, '');
+        const velocity = parseFloat(resultText);
+
+        // Если сервер вернул скорость больше 0 (значит был выстрел)
+        if (!isNaN(velocity) && velocity > 0) {
+            const heightInput = document.getElementById('height');
+            const heightCm = heightInput ? parseFloat(heightInput.value) : 15;
+
+            // Запускаем анимацию!
+            triggerPhysicsAnimation(heightCm, velocity);
+        }
+    }
+
+    // Блокируем кнопку перед отправкой формы, чтобы избежать двойного клика
+    const form = document.querySelector('form');
+    if(form) {
+        form.addEventListener('submit', (e) => {
+            const btn = document.getElementById('fireBtn');
+            if(btn) {
+                btn.disabled = true;
+                btn.innerText = "Считаем...";
+            }
+        });
+    }
+});

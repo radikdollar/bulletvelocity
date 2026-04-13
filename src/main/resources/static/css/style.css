@@ -1,6 +1,6 @@
- /* ========================================== */
-    /* === ФОН  ======== */
-    /* ========================================== */
+/* ========================================== */
+/* === ФОН  ======== */
+/* ========================================== */
 body, html {
     margin: 0;
     padding: 0;
@@ -10,8 +10,8 @@ body, html {
     font-family: "Lucida Grande", "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: #5e5561;
     transition: background 0.5s ease;
-    cursor: grab; /* Курсор перетаскивания для фона */
-    user-select: none; /* Отключаем выделение текста при свайпе */
+    cursor: grab;
+    user-select: none;
 }
 
 /* Фоны */
@@ -38,9 +38,9 @@ body, html {
 
 /* ========================================== */
 /* ==== ФИЗИЧЕСКИЕ ОБЪЕКТЫ (МАЯТНИК И ПУШКА) == */
+/* ==== ФИЗИЧЕСКИЕ ОБЪЕКТЫ (МАЯТНИК И ПУШКА) == */
 /* ========================================== */
 
-/* Точка крепления маятника (потолок) */
 .pendulum-pivot {
     position: absolute;
     top: 0px;
@@ -48,26 +48,19 @@ body, html {
     transform: translateX(-50%);
     width: 80px;
     height: 16px;
-
     background: linear-gradient(180deg, #d4d7db 0%, #a6abb2 100%);
     border-radius: 0 0 12px 12px;
     border: 1px solid #777;
     border-top: 1px solid #fff;
-
-    box-shadow:
-            inset 0 -2px 5px rgba(255,255,255,0.6),
-            0 6px 12px rgba(0,0,0,0.4);
-
+    box-shadow: inset 0 -2px 5px rgba(255,255,255,0.6), 0 6px 12px rgba(0,0,0,0.4);
     z-index: 20;
 }
 
-/* Вращающаяся система маятника */
 .pendulum-system {
     position: absolute;
-    top: 25px; /* Ось вращения смещена под крепление */
-    /* ИСПРАВЛЕНИЕ: Жесткое центрирование, смещаем ровно на половину ширины (40px) влево */
+    top: 25px;
     left: calc(50% - 40px);
-    width: 80px; /* Фиксированная ширина для ровного центрирования детей */
+    width: 80px;
     transform-origin: top center;
     display: flex;
     flex-direction: column;
@@ -75,7 +68,6 @@ body, html {
     z-index: 10;
 }
 
-/* Нить маятника */
 .wire {
     width: 2px;
     height: 50vh;
@@ -83,24 +75,19 @@ body, html {
     box-shadow: 1px 0 2px rgba(0,0,0,0.8);
 }
 
-/* Металлический блок маятника (Стиль Chrome/Матовый алюминий) */
 .block {
     width: 80px;
     height: 80px;
     background: linear-gradient(135deg, #f0f2f5 0%, #b0b5bd 49%, #8a909a 50%, #c4c8cf 100%);
     border: 2px solid #555;
     border-radius: 10px;
-    box-shadow:
-            inset 2px 2px 5px rgba(255,255,255,0.9),
-            inset -3px -3px 6px rgba(0,0,0,0.4),
-            5px 10px 20px rgba(0,0,0,0.6);
+    box-shadow: inset 2px 2px 5px rgba(255,255,255,0.9), inset -3px -3px 6px rgba(0,0,0,0.4), 5px 10px 20px rgba(0,0,0,0.6);
     position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 28px;
     font-weight: bold;
-    /* Эффект выгравированного текста */
     color: #333;
     text-shadow: 0 1px 1px rgba(255,255,255,0.8), 0 -1px 1px rgba(0,0,0,0.3);
 }
@@ -111,14 +98,12 @@ body, html {
     top: 20px;
     width: 6px;
     height: 40px;
-    /* Темный вороненый металл для контраста */
     background: linear-gradient(to right, #444, #666, #333);
     border: 1px solid #222;
     border-radius: 2px;
     box-shadow: inset 1px 0 2px rgba(255,255,255,0.3);
 }
 
-/* Стендовая пушка (Слева) */
 .launcher-station {
     position: absolute;
     left: 8vw;
@@ -158,7 +143,6 @@ body, html {
     width: 20px;
     height: 8px;
     background: linear-gradient(to bottom, #ffea8c, #d4af37, #997a00);
-    /* ИСПРАВЛЕНИЕ: Форма пули. Плоская слева (3px), острая справа (50%) */
     border-radius: 3px 50% 50% 3px;
     box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
     z-index: 11;
@@ -182,7 +166,6 @@ body, html {
     z-index: 14;
     transform: translate(-50%, -50%);
 }
-
 .impact-flash {
     position: absolute;
     width: 300px;
@@ -194,7 +177,7 @@ body, html {
     pointer-events: none;
 }
 
-/* === КНОПКА ФОНА (КЛАССИЧЕСКАЯ МЕТАЛЛИЧЕСКАЯ КНОПКА) === */
+/* === КНОПКА ФОНА === */
 .bg-switcher {
     position: fixed;
     top: 20px;
@@ -204,10 +187,7 @@ body, html {
     border-radius: 50%;
     background: linear-gradient(180deg, #e6e8eb 0%, #c4c8cf 49%, #b0b5bd 50%, #d4d7db 100%);
     border: 1px solid #777;
-    box-shadow:
-            0 4px 8px rgba(0,0,0,0.4),
-            inset 0 2px 4px rgba(255,255,255,0.9),
-            inset 0 -2px 5px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255,255,255,0.9), inset 0 -2px 5px rgba(0,0,0,0.2);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -216,48 +196,28 @@ body, html {
     font-size: 20px;
     transition: transform 0.1s, box-shadow 0.1s;
 }
-
-/* Убираем стеклянный блик от прошлой версии, металлу он не нужен */
-.bg-switcher::before {
-    display: none;
-}
-
 .bg-switcher:active {
     transform: scale(0.92);
     background: linear-gradient(180deg, #b0b5bd 0%, #9a9fa8 49%, #8a909a 50%, #a6abb2 100%);
-    box-shadow:
-            0 2px 4px rgba(0,0,0,0.4),
-            inset 0 3px 6px rgba(0,0,0,0.5);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 3px 6px rgba(0,0,0,0.5);
 }
 
 /* ========================================== */
-/* === ИЗМЕРИТЕЛЬНАЯ ШКАЛА (PROTRACTOR) ===== */
+/* === ИЗМЕРИТЕЛЬНАЯ ШКАЛА ===== */
 /* ========================================== */
 #scale-container {
     position: absolute;
-    top: 10px; /* Совпадает с осью маятника */
+    top: 10px;
     left: 50%;
     width: 100vh;
     height: 100vh;
     transform: translateX(-50%);
     pointer-events: none;
-    z-index: 5; /* За маятником */
+    z-index: 5;
 }
-.scale-line {
-    stroke: rgba(255, 255, 255, 0.2);
-    stroke-width: 1.5;
-}
-.scale-line-major {
-    stroke: rgba(255, 255, 255, 0.5);
-    stroke-width: 2;
-}
-.scale-text {
-    fill: rgba(255, 255, 255, 0.6);
-    font-size: 14px;
-    font-family: monospace;
-    text-anchor: middle;
-    alignment-baseline: middle;
-}
+.scale-line { stroke: rgba(255, 255, 255, 0.2); stroke-width: 1.5; }
+.scale-line-major { stroke: rgba(255, 255, 255, 0.5); stroke-width: 2; }
+.scale-text { fill: rgba(255, 255, 255, 0.6); font-size: 14px; font-family: monospace; text-anchor: middle; alignment-baseline: middle; }
 
 /* ========================================== */
 /* === КОНТЕЙНЕР СИМУЛЯЦИИ И ЗУМ ============ */
@@ -269,12 +229,9 @@ body, html {
     width: 100vw;
     height: 100vh;
     transform-origin: center center;
-    transition: transform 0.15s ease-out; /* Плавный зум для кнопок */
+    transition: transform 0.15s ease-out;
 }
-
-#simulation-container.dragging {
-    transition: none; /* Отключаем плавность при ручном перетаскивании для устранения дерганий */
-}
+#simulation-container.dragging { transition: none; }
 
 .zoom-panel {
     position: fixed;
@@ -293,32 +250,14 @@ body, html {
     align-items: center;
     gap: 15px;
     z-index: 100;
-    cursor: default; /* Обычный курсор над панелью */
+    cursor: default;
 }
-
-.zoom-icon {
-    font-size: 24px;
-    font-weight: bold;
-    color: #444;
-    text-shadow: 0 1px 0 rgba(255,255,255,0.8);
-    cursor: pointer;
-    user-select: none;
-    width: 24px;
-    text-align: center;
-    transition: transform 0.1s;
-}
-
-.zoom-icon:active {
-    transform: scale(0.8);
-}
-
-.zoom-panel input[type="range"] {
-    width: 150px;
-    margin: 0;
-}
+.zoom-icon { font-size: 24px; font-weight: bold; color: #444; text-shadow: 0 1px 0 rgba(255,255,255,0.8); cursor: pointer; user-select: none; width: 24px; text-align: center; transition: transform 0.1s; }
+.zoom-icon:active { transform: scale(0.8); }
+.zoom-panel input[type="range"] { width: 150px; margin: 0; }
 
 /* ========================================== */
-/* === ПАНЕЛЬ УПРАВЛЕНИЯ (BRUSHED METAL) ==== */
+/* === ПАНЕЛЬ УПРАВЛЕНИЯ ==== */
 /* ========================================== */
 .control-panel {
     position: fixed;
@@ -333,52 +272,20 @@ body, html {
     padding: 20px 25px 30px 25px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255,255,255,1);
     z-index: 100;
-    cursor: default; /* Обычный курсор над панелью */
+    cursor: default;
 }
 
-.window-controls {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 20px;
-}
-.dot {
-    width: 13px;
-    height: 13px;
-    border-radius: 50%;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.5);
-}
+.window-controls { display: flex; gap: 6px; margin-bottom: 20px; }
+.dot { width: 13px; height: 13px; border-radius: 50%; box-shadow: inset 0 1px 3px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.5); }
 .dot.red { background: radial-gradient(circle at 30% 30%, #ff8585, #ff2e2e 70%, #cc0000); border: 1px solid #d00; }
 .dot.yellow { background: radial-gradient(circle at 30% 30%, #ffdf85, #ffb82e 70%, #d98f00); border: 1px solid #d90; }
 .dot.green { background: radial-gradient(circle at 30% 30%, #85ff93, #28c940 70%, #008f11); border: 1px solid #0a0; }
 
-.panel-header h2 {
-    margin: 0;
-    font-size: 18px;
-    text-shadow: 0 1px 0 rgba(255,255,255,0.8);
-    text-align: center;
-    color: #222;
-}
+.panel-header h2 { margin: 0; font-size: 18px; text-shadow: 0 1px 0 rgba(255,255,255,0.8); text-align: center; color: #222; }
 
-.inputs-container {
-    margin-top: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.input-group label {
-    font-size: 12px;
-    color: #444;
-    font-weight: bold;
-    text-shadow: 0 1px 0 rgba(255,255,255,0.6);
-    margin-bottom: 4px;
-    display: flex;
-    justify-content: space-between;
-}
-
-.input-wrapper {
-    position: relative;
-}
+.inputs-container { margin-top: 20px; display: flex; flex-direction: column; gap: 12px; }
+.input-group label { font-size: 12px; color: #444; font-weight: bold; text-shadow: 0 1px 0 rgba(255,255,255,0.6); margin-bottom: 4px; display: flex; justify-content: space-between; }
+.input-wrapper { position: relative; }
 
 input[type="number"] {
     width: 100%;
@@ -394,59 +301,17 @@ input[type="number"] {
     box-sizing: border-box;
     font-family: inherit;
 }
+input[type="number"]:focus { box-shadow: inset 0 2px 5px rgba(0,0,0,0.15), 0 0 5px rgba(81, 167, 249, 0.8); border-color: #51a7f9; }
 
-input[type="number"]:focus {
-    box-shadow: inset 0 2px 5px rgba(0,0,0,0.15), 0 0 5px rgba(81, 167, 249, 0.8);
-    border-color: #51a7f9;
-}
+input[type="range"] { -webkit-appearance: none; width: 100%; background: transparent; margin: 5px 0; }
+input[type="range"]:focus { outline: none; }
+input[type="range"]::-webkit-slider-runnable-track { width: 100%; height: 6px; cursor: pointer; background: #888; border-radius: 3px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.8); }
+input[type="range"]::-webkit-slider-thumb { height: 16px; width: 16px; border-radius: 50%; background: linear-gradient(180deg, #f4f4f4 0%, #d4d4d4 100%); border: 1px solid #555; box-shadow: 0 2px 4px rgba(0,0,0,0.4); cursor: pointer; -webkit-appearance: none; margin-top: -6px; }
 
-/* Стилизация ползунка времени */
-input[type="range"] {
-    -webkit-appearance: none;
-    width: 100%;
-    background: transparent;
-    margin: 5px 0;
-}
-input[type="range"]:focus {
-    outline: none;
-}
-input[type="range"]::-webkit-slider-runnable-track {
-    width: 100%;
-    height: 6px;
-    cursor: pointer;
-    background: #888;
-    border-radius: 3px;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.8);
-}
-input[type="range"]::-webkit-slider-thumb {
-    height: 16px;
-    width: 16px;
-    border-radius: 50%;
-    background: linear-gradient(180deg, #f4f4f4 0%, #d4d4d4 100%);
-    border: 1px solid #555;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.4);
-    cursor: pointer;
-    -webkit-appearance: none;
-    margin-top: -6px;
-}
-
-.unit {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #888;
-    font-size: 12px;
-    font-weight: bold;
-}
+.unit { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #888; font-size: 12px; font-weight: bold; }
 
 /* Кнопки */
-.button-group {
-    display: flex;
-    gap: 10px;
-    margin-top: 20px;
-}
-
+.button-group { display: flex; gap: 10px; margin-top: 20px; }
 button {
     flex: 1;
     background: linear-gradient(180deg, #8bc2ff 0%, #4f9ef0 49%, #1b6cd9 50%, #2076e3 100%);
@@ -460,56 +325,13 @@ button {
     box-shadow: inset 0 1px 2px rgba(255,255,255,0.8), 0 2px 5px rgba(0,0,0,0.4);
     cursor: pointer;
 }
+button:active { background: linear-gradient(180deg, #5b92cc 0%, #3071b5 49%, #0f4896 50%, #1353a1 100%); box-shadow: inset 0 2px 4px rgba(0,0,0,0.6); }
+button:disabled { background: linear-gradient(180deg, #d0d0d0 0%, #b0b0b0 49%, #999 50%, #a0a0a0 100%); border-color: #777; text-shadow: 0 1px 0 rgba(255,255,255,0.5); color: #555; cursor: not-allowed; }
 
-button:active {
-    background: linear-gradient(180deg, #5b92cc 0%, #3071b5 49%, #0f4896 50%, #1353a1 100%);
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.6);
-}
+.btn-reset { flex: 0.5; background: linear-gradient(180deg, #ff8b8b 0%, #f04f4f 49%, #d91b1b 50%, #e32020 100%); border: 1px solid #731010; box-shadow: inset 0 2px 4px rgba(0,0,0,0.6); }
+.btn-reset:active { background: linear-gradient(180deg, #cc5b5b 0%, #b53030 49%, #960f0f 50%, #a11313 100%); }
 
-button:disabled {
-    background: linear-gradient(180deg, #d0d0d0 0%, #b0b0b0 49%, #999 50%, #a0a0a0 100%);
-    border-color: #777;
-    text-shadow: 0 1px 0 rgba(255,255,255,0.5);
-    color: #555;
-    cursor: not-allowed;
-}
-
-.btn-reset {
-    flex: 0.5;
-    background: linear-gradient(180deg, #ff8b8b 0%, #f04f4f 49%, #d91b1b 50%, #e32020 100%);
-    border: 1px solid #731010;
-}
-.btn-reset:active {
-    background: linear-gradient(180deg, #cc5b5b 0%, #b53030 49%, #960f0f 50%, #a11313 100%);
-}
-
-.result-box {
-    margin-top: 20px;
-    background: #eef2f5;
-    border: 1px solid #888;
-    border-top: 2px solid #666;
-    border-radius: 8px;
-    padding: 15px;
-    text-align: center;
-    box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.result-title {
-    font-size: 11px;
-    font-weight: bold;
-    color: #666;
-    text-transform: uppercase;
-}
-
-.result-value {
-    font-size: 28px;
-    font-weight: bold;
-    color: #111;
-    margin-top: 5px;
-    font-family: "Courier New", Courier, monospace;
-}
-
-.result-value span {
-    font-size: 14px;
-    color: #666;
-}
+.result-box { margin-top: 20px; background: #eef2f5; border: 1px solid #888; border-top: 2px solid #666; border-radius: 8px; padding: 15px; text-align: center; box-shadow: inset 0 2px 5px rgba(0,0,0,0.1); }
+.result-title { font-size: 11px; font-weight: bold; color: #666; text-transform: uppercase; }
+.result-value { font-size: 28px; font-weight: bold; color: #111; margin-top: 5px; font-family: "Courier New", Courier, monospace; }
+.result-value span { font-size: 14px; color: #666; }
